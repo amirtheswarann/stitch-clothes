@@ -10,7 +10,7 @@ def removeWits(img):
     areas = stats[1:,cv2.CC_STAT_AREA]
     result = np.zeros((labels.shape), np.uint8)
     for i in range(0, nlabels - 1):
-        if (areas[i] >= 2200)and areas[i] < 2400:   #keep
+        if (areas[i] >= 2200)and areas[i] < 2400:
             result[labels == i + 1] = 255
     return result
 
@@ -30,18 +30,18 @@ def show2img(img1, img2):
     plt.subplot(1,2,2)
     plt.imshow(img2)
     plt.show()
-def greenScreen(img):
+def getMask(img):
     # img = img[168:2500,844:5150]
     lab = cv2.cvtColor(img,cv2.COLOR_BGR2LAB)
     A = lab[:,:,1]
     thresh = cv2.threshold(A, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
     thresh = removeWits1(thresh)
     return thresh
-    blur = cv2.GaussianBlur(thresh, (0,0), sigmaX=5, sigmaY=5, borderType = cv2.BORDER_DEFAULT)
-    mask = skimage.exposure.rescale_intensity(blur, in_range=(127.5,255), out_range=(0,255)).astype(np.uint8)
-    result = img.copy()
-    result = cv2.cvtColor(img,cv2.COLOR_BGR2BGRA)
-    return result
+    # blur = cv2.GaussianBlur(thresh, (0,0), sigmaX=5, sigmaY=5, borderType = cv2.BORDER_DEFAULT)
+    # mask = skimage.exposure.rescale_intensity(blur, in_range=(127.5,255), out_range=(0,255)).astype(np.uint8)
+    # result = img.copy()
+    # result = cv2.cvtColor(img,cv2.COLOR_BGR2BGRA)
+    # return result
     # result[:,:,3] = mask
     # return result
 

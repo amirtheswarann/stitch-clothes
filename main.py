@@ -5,54 +5,46 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import imageio
+from imageProcessing import *
+from contour import *
 
 img1 = cv2.imread('input/snap1_Mark.jpg')
 img2 = cv2.imread('input/snap2_Mark.jpg')
 
 img1 = img1[168:2500,844:5150]
 img2 = img2[168:2500,844:5150]
-m1 = greenScreen(img1)
-m2 = greenScreen(img2)
-# convert to m1 and m2 to gray
-# m1 = cv2.cvtColor(m1, cv2.COLOR_BGR2GRAY)
-# m2 = cv2.cvtColor(m2, cv2.COLOR_BGR2GRAY)
+m1 = get_mask(img1)
+m2 = get_mask(img2)
 
-show2img(m1, m2)
+# img1 = cv2.cvtColor(img1,cv2.COLOR_BGR2RGB)
+# img2 = cv2.cvtColor(img2,cv2.COLOR_BGR2RGB)
 
-img1 = cv2.cvtColor(img1,cv2.COLOR_BGR2RGB)
-img2 = cv2.cvtColor(img2,cv2.COLOR_BGR2RGB)
+# gray1 = cv2.cvtColor(img1, cv2.COLOR_RGB2GRAY)
+# gray2 = cv2.cvtColor(img2, cv2.COLOR_RGB2GRAY)
+# th1, threshed1 = cv2.threshold(gray1, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
+# th2, threshed2 = cv2.threshold(gray2, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
+# threshed1 = removeWits(threshed1)
+# threshed2 = removeWits(threshed2)
+# cnts1 = cv2.findContours(threshed1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
+# cnts2 = cv2.findContours(threshed2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
 
-gray1 = cv2.cvtColor(img1, cv2.COLOR_RGB2GRAY)
-gray2 = cv2.cvtColor(img2, cv2.COLOR_RGB2GRAY)
-th1, threshed1 = cv2.threshold(gray1, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
-th2, threshed2 = cv2.threshold(gray2, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
-threshed1 = removeWits(threshed1)
-threshed2 = removeWits(threshed2)
-cnts1 = cv2.findContours(threshed1, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
-cnts2 = cv2.findContours(threshed2, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
+# cnts1 = cnts1[0:2]
 
-cnts1 = cnts1[0:2]
+# # show2img(img1, img2)
+# cPoints1 = []
+# cPoints2 = []
+# for c in cnts1:
+#     M = cv2.moments(c)
+#     cX = int(M["m10"] / M["m00"])
+#     cY = int(M["m01"] / M["m00"])
+#     cPoints1.append([cX, cY])
+# for c in cnts2:
+#     M = cv2.moments(c)
+#     cX = int(M["m10"] / M["m00"])
+#     cY = int(M["m01"] / M["m00"])
+#     cPoints2.append([cX, cY])
 
-# show2img(img1, img2)
-cPoints1 = []
-cPoints2 = []
-for c in cnts1:
-    M = cv2.moments(c)
-    cX = int(M["m10"] / M["m00"])
-    cY = int(M["m01"] / M["m00"])
-    cPoints1.append([cX, cY])
-for c in cnts2:
-    M = cv2.moments(c)
-    cX = int(M["m10"] / M["m00"])
-    cY = int(M["m01"] / M["m00"])
-    cPoints2.append([cX, cY])
-
-for i in range(len(cPoints1)):
-    cv2.circle(img1, (cPoints1[i][0], cPoints1[i][1]), 3, (0, 0, 255), -1)
-    cv2.circle(img2, (cPoints2[i][0], cPoints2[i][1]), 3, (0, 0, 255), -1)
-
-l1, r1 = left_right(cPoints1[0], cPoints1[1])
-l2, r2 = left_right(cPoints2[0], cPoints2[1])
+im1ppoints = get_points(img1, middleImage=False)
 
 def getAngle(p1, p2):
     yDiff = p2[0] - p1[0]
