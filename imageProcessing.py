@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import skimage.exposure
 
-
 def remove_wits(binary_map, min_area, max_area = None): 
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary_map, None, None, None, 8, cv2.CV_32S)
     areas = stats[1:,cv2.CC_STAT_AREA]
@@ -57,13 +56,6 @@ def findEndPoints(binary_img):
             right = i
             break
     return top, bottom, left, right
-    # sz = binary_img.shape
-    # top = divmod(np.flatnonzero(binary_img), sz[1])[::-1]
-    # bottom = divmod(np.flatnonzero(binary_img[::-1]), sz[1])[::-1]
-    # left = divmod(np.flatnonzero(binary_img.T), sz[0])[::-1]
-    # right = divmod(np.flatnonzero(binary_img.T[::-1]), sz[0])[::-1]
-    # return top[1], bottom[1], left[0], right[0]
-
 def stich_img(img1,img2, m1, m2, l1, r1, l2, r2):
     angle1 = getAngle(l1, r1)
     rimg1 = rotate_bound(img1, angle1, l1)

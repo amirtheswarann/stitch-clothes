@@ -10,9 +10,9 @@ def center_point(cnts):
 def get_points(img,middleImage=False):
     ## we are finding contours in the image
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    th, threshed = cv2.threshold(gray, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
-    threshed = remove_wits(threshed, 2200, 2400)
-    cnts = cv2.findContours(threshed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
+    thresh = cv2.threshold(gray, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)[1]
+    thresh = remove_wits(thresh, 2200, 2400)
+    cnts = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
 
     if middleImage:
         # for a middle image we need to find the for contours(required mark)
