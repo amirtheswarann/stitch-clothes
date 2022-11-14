@@ -1,10 +1,5 @@
 import cv2
-import matplotlib.pyplot as plt
-import numpy as np
-import skimage.exposure
-import imutils
-from functions import *
-
+from imageProcessing import remove_wits
 def center_point(cnts):
     # returns the center point of the contour
     M = cv2.moments(cnts)
@@ -16,7 +11,7 @@ def get_points(img,middleImage=False):
     ## we are finding contours in the image
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     th, threshed = cv2.threshold(gray, 255, 255, cv2.THRESH_BINARY|cv2.THRESH_OTSU)
-    threshed = removeWits(threshed)
+    threshed = remove_wits(threshed, 2200, 2400)
     cnts = cv2.findContours(threshed, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)[-2]
 
     if middleImage:
