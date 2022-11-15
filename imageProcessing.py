@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import skimage.exposure
+import matplotlib.pyplot as plt
 
 def remove_wits(binary_map, min_area, max_area = None):
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(binary_map, None, None, None, 8, cv2.CV_32S)
@@ -21,6 +22,8 @@ def get_mask(img):
     A = lab[:,:,1]
     thresh = cv2.threshold(A, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
     thresh = remove_wits(thresh, 350)
+    plt.imshow(thresh)
+    plt.show()
     return thresh
 
 def get_angle(p1, p2):
@@ -103,10 +106,18 @@ def stich_img(img1,img2, m1, m2, l1, r1, l2, r2):# m1 and m2 are the masks # l1 
 
     return new_img, new_mask
 
-def green_screen(img, thresh):
+def green_screen(img, thresh, green2alpha = True):
     blur = cv2.GaussianBlur(thresh, (0,0), sigmaX=5, sigmaY=5, borderType = cv2.BORDER_DEFAULT)
     mask = skimage.exposure.rescale_intensity(blur, in_range=(127.5,255), out_range=(0,255)).astype(np.uint8)
     result = img.copy()
-    result = cv2.cvtColor(img,cv2.COLOR_BGR2BGRA)
-    result[:,:,3] = mask
-    return result
+    if green2alpha:
+        result = cv2.cvtColor(img,cv2.COLOR_BGR2BGRA)
+        result[:,:,3] = mask
+        return result
+    else:
+        mask =  ~mask
+        result[:,:,0] = cv2.bitwise_or(img[:,:,0],mask)
+        result[:,:,1] = cv2.bitwise_or(img[:,:,1],mask)
+        result[:,:,2] = cv2.bitwise_or(img[:,:,2],mask)
+        # result[:,:,0] = ~mask
+        return result
